@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class Node
 {
-    private Vector2Int nodeCoordinates;
+    private Vector2 nodeCoordinates;
     private int nodeType;
     private Node parent;
     private List<Node> neighbouringNodes = new List<Node>();
 
-    public Vector2Int NodeCoordinates { get { return nodeCoordinates; } set { nodeCoordinates = value; } }
+    public Vector2 NodeCoordinates { get { return nodeCoordinates; } set { nodeCoordinates = value; } }
     public int NodeType { get { return nodeType; } set { nodeType = value; } }
     public Node Parent { get { return parent; } set { parent = value; } }
     public List<Node> NeighbouringNodes { get { return neighbouringNodes; } set { neighbouringNodes = value; } }
