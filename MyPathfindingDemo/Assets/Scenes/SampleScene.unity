@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34169a6e564c4744884cd4257f73f1a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tilePrefab: {fileID: 8651763159239732501, guid: 058ea3951822c97438ebd6450974c468, type: 3}
 --- !u!4 &24902162
 Transform:
   m_ObjectHideFlags: 0
@@ -176,13 +177,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 323843245}
+  - component: {fileID: 323843246}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &323843245
 Transform:
   m_ObjectHideFlags: 0
@@ -198,6 +200,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &323843246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 323843244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7399861d07c79894799b1516e248b4d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graphManager: {fileID: 24902161}
+  startingNode: {fileID: 0}
+  targetNode: {fileID: 0}
 --- !u!1 &498880591
 GameObject:
   m_ObjectHideFlags: 0

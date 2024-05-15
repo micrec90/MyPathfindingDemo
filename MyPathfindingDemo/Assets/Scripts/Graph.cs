@@ -99,8 +99,10 @@ public class Graph
     {
         if (neighbour != null)
         {
-            neighbour.NeighbouringNodes.Add(node);
-            node.NeighbouringNodes.Add(neighbour);
+            if(!neighbour.NeighbouringNodes.Contains(node))
+                neighbour.NeighbouringNodes.Add(node);
+            if(!node.NeighbouringNodes.Contains(neighbour))
+                node.NeighbouringNodes.Add(neighbour);
         }
     }
 }
