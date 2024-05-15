@@ -1,5 +1,8 @@
+using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class Graph
@@ -7,6 +10,11 @@ public class Graph
     private Node[,] nodes;
     public Node[,] Nodes { get { return nodes; } }
 
+    public Graph(int[] map, SizeInfo sizeInfo)
+    {
+        InitGraph(map, sizeInfo);
+        InitNeighbours();
+    }
     public Graph(int[,] map)
     {
         nodes = new Node[map.GetLength(0), map.GetLength(1)];
@@ -17,13 +25,32 @@ public class Graph
             {
                 Node node = new Node()
                 {
-                    NodeCoordinates = new Vector2Int(i, j),
+                    NodeCoordinates = new RowColumn(i, j),
                     NodeType = map[i, j]
                 };
                 nodes[i, j] = node;
             }
         }
-        // neighbours
+        InitNeighbours();
+    }
+    public void InitGraph(int[] map, SizeInfo sizeInfo)
+    {
+        nodes = new Node[sizeInfo.rows, sizeInfo.columns];
+        for (int i = 0; i < map.Length; i++)
+        {
+            int row = i / sizeInfo.rows;
+            int column = i % sizeInfo.columns;
+
+            Node node = new Node()
+            {
+                NodeCoordinates = new RowColumn(row, column),
+                NodeType = map[i]
+            };
+            nodes[row, column] = node;
+        }
+    }
+    public void InitNeighbours()
+    {
         for (int i = 0; i < nodes.GetLength(0); i++)
         {
             for (int j = 0; j < nodes.GetLength(1); j++)
@@ -42,10 +69,11 @@ public class Graph
             }
         }
     }
+
     public void ChangeNode(Node node)
     {
-        int j = (int)node.NodeCoordinates.y;
-        int i = (int)node.NodeCoordinates.x;
+        int j = (int)node.NodeCoordinates.Column;
+        int i = (int)node.NodeCoordinates.Row;
         Node up = (i > 0 && nodes[i - 1, j].NodeType != 0) ? nodes[i - 1, j] : null;
         Node down = (i < nodes.GetLength(0) - 1 && nodes[i + 1, j].NodeType != 0) ? nodes[i + 1, j] : null;
         Node left = (j > 0 && nodes[i, j - 1].NodeType != 0) ? nodes[i, j - 1] : null;
@@ -61,10 +89,18 @@ public class Graph
         }
         else
         {
-            up?.NeighbouringNodes.Add(node);
-            down?.NeighbouringNodes.Add(node);
-            left?.NeighbouringNodes.Add(node);
-            right?.NeighbouringNodes.Add(node);
+            SetNeighbour(node, up);
+            SetNeighbour(node, down);
+            SetNeighbour(node, left);
+            SetNeighbour(node, right);
+        }
+    }
+    private void SetNeighbour(Node node, Node neighbour)
+    {
+        if (neighbour != null)
+        {
+            neighbour.NeighbouringNodes.Add(node);
+            node.NeighbouringNodes.Add(neighbour);
         }
     }
 }

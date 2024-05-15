@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class PlaneGrid : MonoBehaviour
 {
-    [SerializeField]
     private float radius;
     private float diameter;
     private Vector2Int size;
@@ -13,6 +12,7 @@ public class PlaneGrid : MonoBehaviour
 
     private void Start()
     {
+        radius = 1;
         diameter = 2 * radius;
     }
     private void Update()
