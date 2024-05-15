@@ -9,8 +9,6 @@ public class GraphGenerator : MonoBehaviour
     [SerializeField]
     [TextArea(10, 11)]
     private string map;
-    [SerializeField]
-    PlaneGrid planeGrid;
 
     private void Start()
     {
@@ -30,7 +28,6 @@ public class GraphGenerator : MonoBehaviour
             }
         }
         Graph graph = new Graph(nodes);
-        planeGrid.InitializeGrid(graph);
         //var path = BFS.FindPath(graph.Nodes[1, 0], graph.Nodes[1,8]);
         //string s = "";
         //for(int i = 0; i < path.Count; i++)
