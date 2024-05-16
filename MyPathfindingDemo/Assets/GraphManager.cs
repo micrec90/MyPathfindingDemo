@@ -19,6 +19,8 @@ public class GraphManager : MonoBehaviour
 
     [SerializeField]
     private GameObject tilePrefab;
+    [SerializeField]
+    private GameObject graphTiles;
     public Graph Graph { get { return graph; } }
     private void Awake()
     {
@@ -39,12 +41,54 @@ public class GraphManager : MonoBehaviour
     }
     private void LoadGraphFromFile(string text)
     {
+        Clean();
         GraphFileInfo graphFileInfo = JsonUtility.FromJson<GraphFileInfo>(text);
         graph = new Graph(graphFileInfo.nodes, graphFileInfo.size);
         size = graphFileInfo.size;
         CreateGrid();
     }
+    public void GenerateGraph(int[] nodes, SizeInfo size)
+    {
+        Clean();
+        graph = new Graph(nodes, size);
+        this.size = size;
+        CreateGrid();
+    }
+    public void GenerateGraph(int rows, int columns)
+    {
+        Clean();
+        size = new SizeInfo()
+        {
+            rows = rows,
+            columns = columns
+        };
+        int[] map = new int[rows*columns];
+        for (int i = 0; i < map.Length; i++)
+            map[i] = 1;
+        graph = new Graph(map, size);
+        CreateGrid();
+    }
+    private void Clean()
+    {
+        ClearPath();
+        CleanGrid();
+        CleanMarkers();
+    }
+    private void CleanGrid()
+    {
+        if (graph == null)
+            return;
 
+        foreach(Transform child in graphTiles.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+    private void CleanMarkers()
+    {
+        startingTile = null;
+        targetTile = null;
+    }
     private void CreateGrid()
     {
         //Gizmos.DrawWireCube(transform.position, new Vector3(size.rows, 1, size.columns));
@@ -57,7 +101,7 @@ public class GraphManager : MonoBehaviour
             for (int j = 0; j < graph.Nodes.GetLength(1); j++)
             {
                 Vector3 position = topleft + Vector3.right * (j) + Vector3.up * (1 - i);
-                GameObject go = Instantiate(tilePrefab, position, Quaternion.identity);
+                GameObject go = Instantiate(tilePrefab, position, Quaternion.identity, graphTiles.transform);
                 Tile tile = go.GetComponent<Tile>();
                 tile.Node = graph.Nodes[i,j];
                 go.GetComponent<Renderer>().material.color = tile.Node.NodeType == 0 ? Color.black : Color.white;
