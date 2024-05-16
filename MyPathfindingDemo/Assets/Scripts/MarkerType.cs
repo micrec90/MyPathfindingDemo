@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts
 {
-    [Serializable]
-    public class GraphFileInfo
+    public enum MarkerType
     {
-        public SizeInfo size;
-        public int[] nodes;
+        None = 0,
+        Arrow = 1,
+        Circle = 2,
+        Cross = 3
     }
 }

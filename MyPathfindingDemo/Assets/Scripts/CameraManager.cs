@@ -11,7 +11,7 @@ public class CameraManager : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        mainCamera.transform.position = ClampCamera(mainCamera.transform.position);
+        //mainCamera.transform.position = ClampCamera(mainCamera.transform.position);
     }
     Vector3 dragOrigin;
     void PanCamera()

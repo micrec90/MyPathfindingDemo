@@ -69,10 +69,11 @@ public class GraphManager : MonoBehaviour
     {
         if (tile != null && tile.Node.NodeType == 1)
         {
+
             if (startingTile == null)
             {
                 startingTile = tile;
-                startingTile.ShowMarker(true);
+                startingTile.ShowMarker(true, MarkerType.Circle);
                 startingTile.SetMarkerColor(Color.blue);
             }
             else if (startingTile == tile)
@@ -93,8 +94,8 @@ public class GraphManager : MonoBehaviour
                 if(targetTile != null)
                     targetTile.ShowMarker(false);
                 targetTile = tile;
-                targetTile.ShowMarker(true);
-                targetTile.SetMarkerColor(Color.cyan);
+                targetTile.ShowMarker(true, MarkerType.Cross);
+                targetTile.SetMarkerColor(Color.red);
             }
         }
         ClearPath();
@@ -132,8 +133,8 @@ public class GraphManager : MonoBehaviour
                     continue;
                 if (pathNode.Tile == targetTile)
                     continue;
-                pathNode.Tile.ShowArrow(true);
-                pathNode.Tile.SetArrowColor(Color.green);
+                pathNode.Tile.ShowMarker(true, MarkerType.Arrow);
+                pathNode.Tile.SetMarkerColor(Color.green);
             }
         }
     }
@@ -147,7 +148,7 @@ public class GraphManager : MonoBehaviour
                 continue;
             if (pathNode.Tile == targetTile)
                 continue;
-            pathNode.Tile.ShowArrow(false);
+            pathNode.Tile.ShowMarker(false);
         }
         bfsPath.Clear();
     }
