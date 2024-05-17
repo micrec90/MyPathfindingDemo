@@ -1,4 +1,5 @@
 using Assets.Scripts;
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,6 +12,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GraphManager graphManager;
+    [SerializeField]
+    GameObject player;
+    [SerializeField]
+    ThirdPersonController controller;
     private void Awake()
     {
         if (instance == null)
@@ -30,7 +35,8 @@ public class GameManager : MonoBehaviour
     {
     }
     bool isToggleChecked = false;
-    string rows, columns, map;
+    string rows = "5";
+    string columns = "5";
 
     private void OnGUI()
     {
@@ -49,6 +55,27 @@ public class GameManager : MonoBehaviour
                     GraphManager.Instance.GenerateGraph(rowCount, columnCount);
             }
         }
-
     }
+    public void Play(List<Node> path)
+    {
+        if (path.Count == 0)
+            return;
+
+        DestroyPlayer();
+        GameObject go = Instantiate(player, path[0].Tile.transform.position, Quaternion.identity);
+        controller = go.GetComponent<ThirdPersonController>();
+    }
+    public void SetPath(List<Node> path)
+    {
+        if(path.Count == 0)
+            return;
+        controller.SetPath(path);
+    }
+    public void DestroyPlayer()
+    {
+        if (controller != null)
+            Destroy(controller.gameObject);
+    }
+
+
 }

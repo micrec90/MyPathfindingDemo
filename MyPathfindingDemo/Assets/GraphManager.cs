@@ -73,6 +73,7 @@ public class GraphManager : MonoBehaviour
         ClearPath();
         CleanGrid();
         CleanMarkers();
+        GameManager.Instance.DestroyPlayer();
     }
     private void CleanGrid()
     {
@@ -94,6 +95,7 @@ public class GraphManager : MonoBehaviour
         //Gizmos.DrawWireCube(transform.position, new Vector3(size.rows, 1, size.columns));
         if (graph == null)
             return;
+        graphTiles.transform.eulerAngles = new Vector3(0, 0, 0);
         //Node mousePosition = NodeFromWorldPoint();
         Vector3 topleft = transform.position - Vector3.right * size.rows / 2 + Vector3.up * size.columns / 2;
         for (int i = 0; i < graph.Nodes.GetLength(0); i++)
@@ -107,6 +109,7 @@ public class GraphManager : MonoBehaviour
                 go.GetComponent<Renderer>().material.color = tile.Node.NodeType == 0 ? Color.black : Color.white;
             }
         }
+        graphTiles.transform.eulerAngles = new Vector3(90, 0, 0);
     }
     private List<Node> bfsPath = new List<Node>();
     public void SetAlgorithmPoint(Tile tile)
@@ -156,7 +159,7 @@ public class GraphManager : MonoBehaviour
                 if (i < bfsPath.Count - 1)
                 {
                     Node nextPathNode = bfsPath[i + 1];
-                    Vector3 difference = nextPathNode.Tile.transform.position - pathNode.Tile.transform.position;
+                    Vector3 difference = nextPathNode.Tile.transform.localPosition - pathNode.Tile.transform.localPosition;
                     Vector3 rotation = Vector3.zero;
                     if (difference == Vector3.right)
                     {
@@ -180,6 +183,8 @@ public class GraphManager : MonoBehaviour
                 pathNode.Tile.ShowMarker(true, MarkerType.Arrow);
                 pathNode.Tile.SetMarkerColor(Color.green);
             }
+            GameManager.Instance.Play(bfsPath);
+            GameManager.Instance.SetPath(bfsPath);
         }
     }
     private void ClearPath()

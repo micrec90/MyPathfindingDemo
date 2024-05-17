@@ -42,6 +42,6 @@ public class Tile : MonoBehaviour
     }
     public void RotateArrow(Vector3 rotation)
     {
-        markers[(int)MarkerType.Arrow].transform.eulerAngles = rotation;
+        markers[(int)MarkerType.Arrow].transform.localEulerAngles = rotation;
     }
 }

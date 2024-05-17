@@ -44,12 +44,12 @@ public class CameraManager : MonoBehaviour
 
         float minX = topLeftTile.transform.position.x - 5 + camWidth;
         float maxX = bottomRightTile.transform.position.x + 5 - camWidth;
-        float minY = bottomRightTile.transform.position.y - 5 + camHeight;
-        float maxY = topLeftTile.transform.position.y + 5 - camHeight;
+        float minY = bottomRightTile.transform.position.z - 10 + camHeight;
+        float maxY = topLeftTile.transform.position.z - camHeight;
 
         float newX = minX >= maxX ? 0 : Mathf.Clamp(targetPosition.x, minX, maxX);
-        float newY = minY >= maxY ? 0 : Mathf.Clamp(targetPosition.y, minY, maxY);
-        return new Vector3(newX, newY, mainCamera.transform.position.z);
+        float newY = minY >= maxY ? 0 : Mathf.Clamp(targetPosition.z, minY, maxY);
+        return new Vector3(newX, mainCamera.transform.position.y, newY);
     }
     private void Update()
     {
