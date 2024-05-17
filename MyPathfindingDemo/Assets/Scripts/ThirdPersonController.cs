@@ -11,9 +11,6 @@ using UnityEngine.InputSystem;
 namespace StarterAssets
 {
     [RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-    [RequireComponent(typeof(PlayerInput))]
-#endif
     public class ThirdPersonController : MonoBehaviour
     {
         public bool Run = false;
@@ -92,7 +89,6 @@ namespace StarterAssets
         private float _targetRotation = 0.0f;
         private float _rotationVelocity;
         private float _verticalVelocity;
-        private float _terminalVelocity = 53.0f;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -155,6 +151,10 @@ namespace StarterAssets
             }
             Move(destinationTile);
         }
+        public void SetStartingPositon(Node startingNode)
+        {
+            gameObject.transform.position = startingNode.Tile.transform.position;
+        }
         public void ClearPath()
         {
             tilePath.Clear();
@@ -162,6 +162,7 @@ namespace StarterAssets
         }
         public void SetPath(List<Node> path)
         {
+            tileIndex = 0;
             tilePath = path;
             destinationTile = tilePath[tileIndex].Tile;
         }

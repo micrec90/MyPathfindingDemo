@@ -2,6 +2,7 @@ using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GraphManager : MonoBehaviour
 {
@@ -22,6 +23,9 @@ public class GraphManager : MonoBehaviour
     [SerializeField]
     private GameObject graphTiles;
     public Graph Graph { get { return graph; } }
+    private List<Node> bfsPath = new List<Node>();
+
+    UnityEvent OnNodeChanged;
     private void Awake()
     {
         if (instance == null)
@@ -33,6 +37,11 @@ public class GraphManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+        if (OnNodeChanged == null)
+            OnNodeChanged = new UnityEvent();
+        OnNodeChanged.AddListener(ClearPath);
+        OnNodeChanged.AddListener(SetupPath);
+        OnNodeChanged.AddListener(PlaySimulation);
     }
     private void Start()
     {
@@ -111,7 +120,6 @@ public class GraphManager : MonoBehaviour
         }
         graphTiles.transform.eulerAngles = new Vector3(90, 0, 0);
     }
-    private List<Node> bfsPath = new List<Node>();
     public void SetAlgorithmPoint(Tile tile)
     {
         if (tile != null && tile.Node.NodeType == 1)
@@ -145,10 +153,60 @@ public class GraphManager : MonoBehaviour
                 targetTile.SetMarkerColor(Color.red);
             }
         }
-        ClearPath();
-        CalculatePath();
+        if (OnNodeChanged != null)
+            OnNodeChanged.Invoke();
     }
-    private void CalculatePath()
+    public void ChangeNode(Node node)
+    {
+        int j = (int)node.NodeCoordinates.Column;
+        int i = (int)node.NodeCoordinates.Row;
+        Node up = (i > 0 && graph.Nodes[i - 1, j].NodeType != 0) ? graph.Nodes[i - 1, j] : null;
+        Node down = (i < graph.Nodes.GetLength(0) - 1 && graph.Nodes[i + 1, j].NodeType != 0) ? graph.Nodes[i + 1, j] : null;
+        Node left = (j > 0 && graph.Nodes[i, j - 1].NodeType != 0) ? graph.Nodes[i, j - 1] : null;
+        Node right = (j < graph.Nodes.GetLength(1) - 1 && graph.Nodes[i, j + 1].NodeType != 0) ? graph.Nodes[i, j + 1] : null;
+
+        node.NodeType = (node.NodeType + 1) % 2;
+        if (node.NodeType == 0)
+        {
+            up?.NeighbouringNodes.Remove(node);
+            down?.NeighbouringNodes.Remove(node);
+            left?.NeighbouringNodes.Remove(node);
+            right?.NeighbouringNodes.Remove(node);
+        }
+        else
+        {
+            SetNeighbour(node, up);
+            SetNeighbour(node, down);
+            SetNeighbour(node, left);
+            SetNeighbour(node, right);
+        }
+        if (startingTile == node.Tile)
+        {
+            startingTile.ShowMarker(false);
+            targetTile?.ShowMarker(false);
+            startingTile = null;
+            targetTile = null;
+        }
+        else if (node.Tile == targetTile)
+        {
+            targetTile.ShowMarker(false);
+            targetTile = null;
+        }
+
+        if (OnNodeChanged != null)
+            OnNodeChanged.Invoke();
+    }
+    private void SetNeighbour(Node node, Node neighbour)
+    {
+        if (neighbour != null)
+        {
+            if (!neighbour.NeighbouringNodes.Contains(node))
+                neighbour.NeighbouringNodes.Add(node);
+            if (!node.NeighbouringNodes.Contains(neighbour))
+                node.NeighbouringNodes.Add(neighbour);
+        }
+    }
+    public void SetupPath()
     {
         if (startingTile != null && targetTile != null)
         {
@@ -183,9 +241,11 @@ public class GraphManager : MonoBehaviour
                 pathNode.Tile.ShowMarker(true, MarkerType.Arrow);
                 pathNode.Tile.SetMarkerColor(Color.green);
             }
-            GameManager.Instance.Play(bfsPath);
-            GameManager.Instance.SetPath(bfsPath);
         }
+    }
+    private void PlaySimulation()
+    {
+        GameManager.Instance.PlaySimulation(bfsPath);
     }
     private void ClearPath()
     {
@@ -200,54 +260,5 @@ public class GraphManager : MonoBehaviour
             pathNode.Tile.ShowMarker(false);
         }
         bfsPath.Clear();
-    }
-    public void ChangeNode(Node node)
-    {
-        int j = (int)node.NodeCoordinates.Column;
-        int i = (int)node.NodeCoordinates.Row;
-        Node up = (i > 0 && graph.Nodes[i - 1, j].NodeType != 0) ? graph.Nodes[i - 1, j] : null;
-        Node down = (i < graph.Nodes.GetLength(0) - 1 && graph.Nodes[i + 1, j].NodeType != 0) ? graph.Nodes[i + 1, j] : null;
-        Node left = (j > 0 && graph.Nodes[i, j - 1].NodeType != 0) ? graph.Nodes[i, j - 1] : null;
-        Node right = (j < graph.Nodes.GetLength(1) - 1 && graph.Nodes[i, j + 1].NodeType != 0) ? graph.Nodes[i, j + 1] : null;
-
-        node.NodeType = (node.NodeType + 1) % 2;
-        if (node.NodeType == 0)
-        {
-            up?.NeighbouringNodes.Remove(node);
-            down?.NeighbouringNodes.Remove(node);
-            left?.NeighbouringNodes.Remove(node);
-            right?.NeighbouringNodes.Remove(node);
-        }
-        else
-        {
-            SetNeighbour(node, up);
-            SetNeighbour(node, down);
-            SetNeighbour(node, left);
-            SetNeighbour(node, right);
-        }
-        if (startingTile == node.Tile)
-        {
-            startingTile.ShowMarker(false);
-            targetTile?.ShowMarker(false);
-            startingTile = null;
-            targetTile = null;
-        }
-        else if(node.Tile == targetTile)
-        {
-            targetTile.ShowMarker(false);
-            targetTile = null;
-        }
-        ClearPath();
-        CalculatePath();
-    }
-    private void SetNeighbour(Node node, Node neighbour)
-    {
-        if (neighbour != null)
-        {
-            if (!neighbour.NeighbouringNodes.Contains(node))
-                neighbour.NeighbouringNodes.Add(node);
-            if (!node.NeighbouringNodes.Contains(neighbour))
-                node.NeighbouringNodes.Add(neighbour);
-        }
     }
 }

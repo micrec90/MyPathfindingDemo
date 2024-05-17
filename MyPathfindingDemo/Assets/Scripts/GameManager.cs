@@ -28,12 +28,6 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-    void Start()
-    {
-    }
-    void Update()
-    {
-    }
     bool isToggleChecked = false;
     string rows = "5";
     string columns = "5";
@@ -56,19 +50,23 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    public void Play(List<Node> path)
+    public void PlaySimulation(List<Node> path)
     {
         if (path.Count == 0)
             return;
-
-        DestroyPlayer();
-        GameObject go = Instantiate(player, path[0].Tile.transform.position, Quaternion.identity);
-        controller = go.GetComponent<ThirdPersonController>();
-    }
-    public void SetPath(List<Node> path)
-    {
-        if(path.Count == 0)
-            return;
+        if (controller != null)
+        {
+            // without the temporary disable the position is not updated
+            controller.gameObject.SetActive(false);
+            controller.SetStartingPositon(path[0]);
+            controller.gameObject.SetActive(true);
+        }
+        else
+        {
+            GameObject go = Instantiate(player, path[0].Tile.transform.position, Quaternion.identity);
+            controller = go.GetComponent<ThirdPersonController>();
+        }
+        controller.ClearPath();
         controller.SetPath(path);
     }
     public void DestroyPlayer()
@@ -76,6 +74,4 @@ public class GameManager : MonoBehaviour
         if (controller != null)
             Destroy(controller.gameObject);
     }
-
-
 }
