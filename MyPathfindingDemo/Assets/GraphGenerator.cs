@@ -1,10 +1,10 @@
 using Assets.Scripts;
-using Palmmedia.ReportGenerator.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+
 
 public class GraphGenerator : MonoBehaviour
 {
@@ -57,7 +57,7 @@ public class GraphGenerator : MonoBehaviour
         GraphManager.Instance.GenerateGraph(nodes, size);
     }
 }
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(GraphGenerator))]
 public class GraphGeneratorEditor : Editor
 {
@@ -78,3 +78,4 @@ public class GraphGeneratorEditor : Editor
         }
     }
 }
+#endif
