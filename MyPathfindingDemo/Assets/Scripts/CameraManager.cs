@@ -6,12 +6,9 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
     private Camera mainCamera;
-    //private float mapMinX, mapMaxX, mapMinY, mapMaxY;
     void Start()
     {
         mainCamera = Camera.main;
-
-        //mainCamera.transform.position = ClampCamera(mainCamera.transform.position);
     }
     Vector3 dragOrigin;
     void PanCamera()
@@ -25,7 +22,6 @@ public class CameraManager : MonoBehaviour
         if (Input.GetMouseButton(2))
         {
             Vector3 difference = dragOrigin - mainCamera.ScreenToWorldPoint(mousePos);
-            //mainCamera.transform.position += difference;
             mainCamera.transform.position = ClampCamera(mainCamera.transform.position + difference);
         }
     }

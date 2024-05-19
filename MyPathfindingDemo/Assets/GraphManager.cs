@@ -130,11 +130,9 @@ public class GraphManager : MonoBehaviour
     }
     private void CreateGrid()
     {
-        //Gizmos.DrawWireCube(transform.position, new Vector3(size.rows, 1, size.columns));
         if (graph == null)
             return;
         graphTiles.transform.eulerAngles = new Vector3(0, 0, 0);
-        //Node mousePosition = NodeFromWorldPoint();
         Vector3 topleft = transform.position - Vector3.right * size.rows / 2 + Vector3.up * size.columns / 2;
         for (int i = 0; i < graph.Nodes.GetLength(0); i++)
         {

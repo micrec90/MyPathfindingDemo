@@ -10,13 +10,12 @@ public class Tile : MonoBehaviour
     private GameObject marker;
     private Node node;
     public Node Node { get { return node; } set { node = value; } }
-    // Start is called before the first frame update
     void Start()
     {
         node.Tile = this;
         marker = markers[0];
     }
-    // OnMouseDown is only triggered by left click
+    // OnMouseDown is only triggered by left click, so to handle other mouse buttons the input is checked when it's over tile
     private void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(0))
