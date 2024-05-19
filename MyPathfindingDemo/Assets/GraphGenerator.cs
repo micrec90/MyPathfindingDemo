@@ -24,7 +24,7 @@ public class GraphGenerator : MonoBehaviour
             {
                 for (int j = 0; j < maxMapSize.y; j++)
                 {
-                    map += "0\t";
+                    map += "1\t";
                 }
                 map = map.TrimEnd('\t');
                 map += Environment.NewLine;
@@ -34,27 +34,7 @@ public class GraphGenerator : MonoBehaviour
     }
     public void GenerateMap(bool random = false)
     {
-        int[] nodes = new int[maxMapSize.x*maxMapSize.y];
-        string[] lines = map.Replace(Environment.NewLine,"\t").TrimEnd().Split('\t');
-        for(int i = 0; i < lines.Length; i++)
-        {
-            if (random)
-                nodes[i] = UnityEngine.Random.Range(0, 2);
-            else
-            {
-                int tileType;
-                bool parsed = int.TryParse(lines[i], out tileType);
-                if (!parsed)
-                    continue;
-                nodes[i] = tileType;
-            }
-        }
-        SizeInfo size = new SizeInfo()
-        {
-            rows = maxMapSize.x,
-            columns = maxMapSize.y
-        };
-        GraphManager.Instance.GenerateGraph(nodes, size);
+        GraphManager.Instance.ParseMapText(map, maxMapSize.x, maxMapSize.y, random);
     }
 }
 #if UNITY_EDITOR

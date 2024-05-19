@@ -1,4 +1,5 @@
 using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,8 @@ public class GraphManager : MonoBehaviour
     private GameObject tilePrefab;
     [SerializeField]
     private GameObject graphTiles;
+    [SerializeField]
+    SimulationManager simulationManager;
     public Graph Graph { get { return graph; } }
     private List<Node> bfsPath = new List<Node>();
 
@@ -56,6 +59,32 @@ public class GraphManager : MonoBehaviour
         size = graphFileInfo.size;
         CreateGrid();
     }
+    public void ParseMapText(string text, int rows, int columns, bool random = false)
+    {
+        int[] nodes = new int[rows * columns];
+        string[] lines = text.Replace("\r", "").Replace("\n", "\t").TrimEnd().Split('\t',' ');
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (i >= nodes.Length)
+                break;
+            if (random)
+                nodes[i] = UnityEngine.Random.Range(0, 2);
+            else
+            {
+                int tileType;
+                bool parsed = int.TryParse(lines[i], out tileType);
+                if (!parsed)
+                    continue;
+                nodes[i] = tileType;
+            }
+        }
+        SizeInfo size = new SizeInfo()
+        {
+            rows = rows,
+            columns = columns
+        };
+        GenerateGraph(nodes, size);
+    }
     public void GenerateGraph(int[] nodes, SizeInfo size)
     {
         Clean();
@@ -82,7 +111,7 @@ public class GraphManager : MonoBehaviour
         ClearPath();
         CleanGrid();
         CleanMarkers();
-        GameManager.Instance.DestroyPlayer();
+        simulationManager.DestroyPlayer();
     }
     private void CleanGrid()
     {
@@ -245,7 +274,7 @@ public class GraphManager : MonoBehaviour
     }
     private void PlaySimulation()
     {
-        GameManager.Instance.PlaySimulation(bfsPath);
+        simulationManager.PlaySimulation(bfsPath);
     }
     private void ClearPath()
     {
